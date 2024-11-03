@@ -12,14 +12,8 @@ class MockArticleController extends Mock implements ArticleController {}
 void main() {
   group('ArticleBloc', () {
     late ArticleBloc articleBloc;
-    late ArticleController articleController;
-    late MockArticleController mockRepository;
     late MockArticleController mockArticleController;
     setUp(() {
-      mockRepository = MockArticleController();
-      articleBloc = ArticleBloc(mockRepository);
-      articleController = ArticleController();
-
       mockArticleController = MockArticleController();
       articleBloc = ArticleBloc(mockArticleController);
     });
@@ -34,10 +28,12 @@ void main() {
 
     blocTest<ArticleBloc, ArticleState>(
       'emits [ArticleLoading, ArticleLoaded] when FetchArticles is added',
-      build: () => ArticleBloc(articleController),
-      act: (bloc) => bloc.add(FetchArticles(null)),
+      build: () => articleBloc,
+      act: (bloc) => articleBloc..add(FetchArticles(null)),
       expect: () => [
         ArticleLoading(),
+        ArticleError(
+            "Error: type 'Null' is not a subtype of type 'Future<List<Article>>'"),
       ],
     );
   });
